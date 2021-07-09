@@ -1,0 +1,57 @@
+extends _layout
+
+block content
+  h1=title
+  hr
+  table.table.dataTable(id='dataTable')
+    thead
+      tr
+        th #
+        th Name
+        th host
+        th Status
+    tbody
+      -for (var i=0; i<pingList.length; i++)
+        tr
+          td=i+1
+          td=pingList[i].name
+          td=pingList[i].host
+          td
+            img(id='img'+i src='img/icons8-iphone-spinner.gif' width='30px' hight='30px' onload='javascript:setInterval(function() { getPing("' + 'img'+i +'", "' + pingList[i].host + '") }, 10000);')
+
+  script.
+    let timer;
+    function getPing(id, host) {
+      $.ajax({
+        method: 'GET',
+        dataType: 'json',
+        data: {host: host},
+        async: false,
+        url: '/pingman/ping',
+        success: function(data) {
+          if($("#" + id).attr('src') == 'img/icons8-iphone-spinner.gif') {
+            if(data) {
+              console.log(host + " : alive true");
+              $("#" + id).attr('src', 'img/icons8-green-circle-48.png');
+            } else {
+              console.log(host + " : alive false");
+              $("#"+ id).attr('src', 'img/icons8-red-circle-48.png');
+            }
+          } else if($("#" + id).attr('src') == 'img/icons8-green-circle-48.png') {
+            if(!data) {
+              console.log(host + " : alive false");
+              $("#"+ id).attr('src', 'img/icons8-red-circle-48.png');
+            }
+          } else if($("#" + id).attr('src') == 'img/icons8-red-circle-48.png') {
+            if(data) {
+              console.log(host + " : alive true");
+              $("#" + id).attr('src', 'img/icons8-green-circle-48.png');
+            }
+          }
+        },
+        error: function(data) {
+          console.log(host + " : error");
+          $("#"+ id).attr('src', 'img/icons8-red-circle-48.png');
+        }
+      });
+    }
