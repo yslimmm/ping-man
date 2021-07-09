@@ -6,7 +6,6 @@ const scheduleService = require('./scheduler/scheduleService');
 
 const scheduler = schedule.scheduleJob(scheduleCron, function() {
 	const jobTransaction = new Date();
-	console.log(`start job.`);
 	logger.start(`[${jobTransaction}] start job.`);
 	scheduleService.job(jobTransaction);
 });

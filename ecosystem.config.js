@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
     name: "pingman",
-    script: './bin/www',
+    script: 'pingman.exe',
 		log_date_format: 'YYYY-MM-DD HH:mm:ss.SSS',
     shutdown_with_message: true,
     env: {
@@ -9,7 +9,7 @@ module.exports = {
       NODE_PORT: 5338,
       NODE_ENV: 'development',
       MS_TEAMS_WEBHOOK_URL: 'https://selvaso365.webhook.office.com/webhookb2/d47597fb-d165-43e1-be76-f22fac19516f@cc51d85f-762a-4d3b-923e-d362382d75d4/IncomingWebhook/3a7dc5e6193847249a55268cfc455943/2d8df388-afcf-49c7-9d7c-eb4c5a474775',
-      SCHEDULE_CRON: '0 */1 * * *',
+      SCHEDULE_CRON: '0 */30 * * *',
       PING_LIST: [{
         name: 'IDC 경찰청',
         host: 'stenoselvy.com'
