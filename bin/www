@@ -1,8 +1,10 @@
 #!/usr/bin/env node
+// process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
+const scheduler = require('../scheduler');
 const app = require('../app');
 const config = require('../config');
 const http = require('http');
-const scheduler = require('../scheduler');
 const logger = require('signale').scope('www');
 
 const ip = process.env.NODE_IP || config.node_ip;
@@ -13,5 +15,5 @@ app.set('port', port);
 const server = http.createServer(app);
 
 server.listen(port, () => {
-	logger.info(`ping man, listening on *:${port}`);
+	logger.info(`ping man, ${process.env.NODE_ENV} listening on *:${port}`);
 });

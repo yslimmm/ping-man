@@ -3,6 +3,7 @@ const ping = require('ping');
 const router = express.Router();
 const utils = require('../utils');
 const config = require('../config');
+const signale = require('signale').scope('index');
 const pingList = process.env.PING_LIST || config.ping_list;
 
 // GET /index page
@@ -30,17 +31,29 @@ router.get('/ping', async (req, res) => {
 });
 
 router.get('/pingall', async (req, res) => {
-  for(let item of pingList) {
+  let array;
+
+  if(!Array.isArray(pingList)) {
+    array = JSON.parse(pingList);
+  } else {
+    array = pingList
+  }
+
+  for(let item of array) {
     await ping.promise.probe(item.host, {
       timeout: 10  
     })
     .then((res) => {
       item.status = res.alive;
       if(!item.status) {
+        signale.error(`[${jobTransaction}] [${item.host}] alive is ${item.status}`);
         utils.sendTeamsError(item.host);
+      } else {
+        signale.info(`[${jobTransaction}] [${item.host}] alive is ${item.status}`);
       }
     });
   }
+
   return res.status(200).json(pingList).end();
 });
 
