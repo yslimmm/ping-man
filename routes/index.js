@@ -15,10 +15,18 @@ router.get('/', (req, res) => {
     return res.json('ping list is undefined.').end();
   }
 
+  let array;
+
+  if(!Array.isArray(pingList)) {
+    array = JSON.parse(pingList);
+  } else {
+    array = pingList
+  }
+
   const renderList = {
     title: 'PING MAN',
     endpoint: ip + ":" + port + "/ping",
-    pingList: pingList,
+    pingList: array,
   };
 
   return res.render('index', renderList);
@@ -27,6 +35,7 @@ router.get('/', (req, res) => {
 
 router.get('/ping', async (req, res) => {
   let result = await ping.promise.probe(req.query.host);
+  signale.info(`[/pingman/ping] [${req.query.host}] alive is ${result.alive}`);
   return res.status(200).json(result.alive).end();
 });
 
@@ -46,15 +55,15 @@ router.get('/pingall', async (req, res) => {
     .then((res) => {
       item.status = res.alive;
       if(!item.status) {
-        signale.error(`[${jobTransaction}] [${item.host}] alive is ${item.status}`);
+        signale.error(`[/pingman/pingall] [${item.host}] alive is ${item.status}`);
         utils.sendTeamsError(item.host);
       } else {
-        signale.info(`[${jobTransaction}] [${item.host}] alive is ${item.status}`);
+        signale.info(`[/pingman/pingall] [${item.host}] alive is ${item.status}`);
       }
     });
   }
 
-  return res.status(200).json(pingList).end();
+  return res.status(200).json(array).end();
 });
 
 module.exports = router;
